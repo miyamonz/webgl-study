@@ -1,11 +1,26 @@
 import matIV from "./minMatrix";
 var m = new matIV();
-export default (width, height) => {
-  // 各種行列の生成と初期化
-  var mMatrix = m.identity(m.create());
-  var vMatrix = m.identity(m.create());
-  var pMatrix = m.identity(m.create());
-  var mvpMatrix = m.identity(m.create());
+
+export function multiply(mat0, mat1) {
+  let ret = m.create();
+  m.multiply(mat0, mat1, ret);
+  return ret;
+}
+export function translate(mat, vec) {
+  let ret = m.create();
+  m.translate(mat, vec, ret);
+  return ret;
+}
+
+export function getModel(pos) {
+  let mat = m.identity(m.create());
+  return translate(mat, pos);
+}
+
+export function getPV({ width, height }) {
+  let vMatrix = m.identity(m.create());
+  let pMatrix = m.identity(m.create());
+  let ret = m.identity(m.create());
 
   // ビュー座標変換行列
   m.lookAt([0.0, 1.0, 3.0], [0, 0, 0], [0, 1, 0], vMatrix);
@@ -13,9 +28,5 @@ export default (width, height) => {
   // プロジェクション座標変換行列
   m.perspective(90, width / height, 0.1, 100, pMatrix);
 
-  // 各行列を掛け合わせ座標変換行列を完成させる
-  m.multiply(pMatrix, vMatrix, mvpMatrix);
-  m.multiply(mvpMatrix, mMatrix, mvpMatrix);
-
-  return mvpMatrix;
-};
+  return multiply(pMatrix, vMatrix);
+}
