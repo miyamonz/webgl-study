@@ -1,4 +1,5 @@
-import { create_vbo, create_program, create_shader } from "./util";
+import { create_program, create_shader } from "./util";
+import registerVBO from "./registerVBO";
 import getMvpMatrix from "./mvpMatrix";
 
 window.onload = function() {
@@ -22,31 +23,23 @@ window.onload = function() {
   // プログラムオブジェクトの生成とリンク
   var prg = create_program(v_shader, f_shader);
 
-  // attributeの要素数(この場合は xyz の3要素)
-  var attStride = 3;
-
   // prettier-ignore
-  // モデル(頂点)データ
-  var vertex_position = [
+  var positions = [
     0.0, 1.0, 0.0, 
     1.0, 0.0, 0.0, 
     -1.0, 0.0, 0.0
   ];
+  registerVBO(prg, positions, 3, "position");
 
-  //vbo
-  // VBOの生成とbind
-  var vbo = create_vbo(vertex_position);
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-
-  // attributeLocationの取得
-  var attLocation = gl.getAttribLocation(prg, "position");
-  // attribute属性を有効 & 登録
-  gl.enableVertexAttribArray(attLocation);
-  gl.vertexAttribPointer(attLocation, attStride, gl.FLOAT, false, 0, 0);
+  // prettier-ignore
+  var colors = [
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+  ];
+  registerVBO(prg, colors, 4, "color");
 
   //uniform
-  // uniformLocationの取得
-  // uniformLocationへ座標変換行列を登録
   var uniLocation = gl.getUniformLocation(prg, "mvpMatrix");
   let mvpMatrix = getMvpMatrix(c.width, c.height);
   gl.uniformMatrix4fv(uniLocation, false, mvpMatrix);
