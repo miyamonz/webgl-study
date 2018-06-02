@@ -1,0 +1,58 @@
+{
+  "webgl": {
+    "configuration": {
+      "config": {
+        "webpackOptions": {
+          "module": {
+            "rules": [
+              {
+                "test": "/\\.js$/",
+                "include": [
+                  "path.resolve(__dirname, 'src')"
+                ],
+                "loader": "'babel-loader'",
+                "options": {
+                  "presets": [
+                    "'env'",
+                    {
+                      "modules": false
+                    }
+                  ],
+                  "plugins": [
+                    "'syntax-dynamic-import'"
+                  ]
+                }
+              }
+            ]
+          },
+          "plugins": [
+            "new UglifyJSPlugin()"
+          ],
+          "entry": "",
+          "mode": "'production'",
+          "optimization": {
+            "splitChunks": {
+              "chunks": "'async'",
+              "minSize": 30000,
+              "minChunks": 1,
+              "name": false,
+              "cacheGroups": {
+                "vendors": {
+                  "test": "/[\\\\/]node_modules[\\\\/]/",
+                  "priority": -10
+                }
+              }
+            }
+          }
+        },
+        "topScope": [
+          "const webpack = require('webpack')",
+          "const path = require('path')",
+          "\n",
+          "/*\n * SplitChunksPlugin is enabled by default and replaced\n * deprecated CommonsChunkPlugin. It automatically identifies modules which\n * should be splitted of chunk by heuristics using module duplication count and\n * module category (i. e. node_modules). And splits the chunks…\n *\n * It is safe to remove \"splitChunks\" from the generated configuration\n * and was added as an educational example.\n *\n * https://webpack.js.org/plugins/split-chunks-plugin/\n *\n */"
+        ],
+        "configName": "prod"
+      }
+    }
+  }
+}
