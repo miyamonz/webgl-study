@@ -23,10 +23,10 @@ export function getPV({ width, height }) {
   let ret = m.identity(m.create());
 
   // ビュー座標変換行列
-  m.lookAt([0.0, 1.0, 3.0], [0, 0, 0], [0, 1, 0], vMatrix);
+  m.lookAt([0.0, 10.0, 20.0], [0, 0, 0], [0, 1, 0], vMatrix);
 
   // プロジェクション座標変換行列
-  m.perspective(90, width / height, 0.1, 100, pMatrix);
+  m.perspective(45, width / height, 0.1, 100, pMatrix);
 
   return multiply(pMatrix, vMatrix);
 }

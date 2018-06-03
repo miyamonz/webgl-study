@@ -6,14 +6,14 @@ let initCanvas = gl => {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 };
 
-export default (gl, prg, size) => {
+export default (gl, prg, size, indexLength) => {
   let pv = getPV(size);
   let uniLocation = gl.getUniformLocation(prg, "mvpMatrix");
   let drawWithMat = mat => {
     gl.uniformMatrix4fv(uniLocation, false, mat);
     // gl.drawArrays(gl.TRIANGLES, 0, 3);
     // インデックスを用いた描画命令
-    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+    gl.drawElements(gl.TRIANGLES, indexLength, gl.UNSIGNED_SHORT, 0);
   };
 
   let count = 0;
@@ -21,7 +21,7 @@ export default (gl, prg, size) => {
     initCanvas(gl);
 
     let t = count / 10;
-    let pos = [Math.cos(t), Math.sin(t), 0];
+    let pos = [3 * Math.cos(t), 0, 3 * Math.sin(t), 0];
 
     //prettier-ignore
     let vecs = [

@@ -1,34 +1,19 @@
 import { create_program, create_shader, create_ibo } from "./util";
 import registerVBO from "./registerVBO";
 import startLoop from "./loop";
+
+import torus from "./torus";
 let prependVBO = prg => {
-  // prettier-ignore
-  let positions = [
-    0.0, 1.0, 0.0, 
-    1.0, 0.0, 0.0, 
-    -1.0, 0.0, 0.0,
-    0.0, -1.0, 0.0, 
-  ];
+  let [positions, colors, index] = torus(32, 32, 1, 2);
 
-  // prettier-ignore
-  let colors = [
-    1.0, 0.0, 0.0, 1.0,
-    0.0, 1.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0,
-  ];
   registerVBO(prg, positions, 3, "position");
-
-  // prettier-ignore
-  let index = [
-    0,1,2,
-    1,2,3,
-  ]
   registerVBO(prg, colors, 4, "color");
 
   let ibo = create_ibo(index);
   // IBOをバインドして登録する
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+
+  return index.length;
 };
 
 window.onload = function() {
@@ -48,6 +33,10 @@ window.onload = function() {
   var f_shader = create_shader("fs");
   var prg = create_program(v_shader, f_shader);
 
-  prependVBO(prg);
-  startLoop(gl, prg, size);
+  let len = prependVBO(prg);
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthFunc(gl.LEQUAL);
+  gl.enable(gl.CULL_FACE);
+
+  startLoop(gl, prg, size, len);
 };
