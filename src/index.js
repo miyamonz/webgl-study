@@ -1,22 +1,34 @@
-import { create_program, create_shader } from "./util";
+import { create_program, create_shader, create_ibo } from "./util";
 import registerVBO from "./registerVBO";
 import startLoop from "./loop";
 let prependVBO = prg => {
   // prettier-ignore
-  var positions = [
+  let positions = [
     0.0, 1.0, 0.0, 
     1.0, 0.0, 0.0, 
-    -1.0, 0.0, 0.0
+    -1.0, 0.0, 0.0,
+    0.0, -1.0, 0.0, 
+  ];
+
+  // prettier-ignore
+  let colors = [
+    1.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0,
   ];
   registerVBO(prg, positions, 3, "position");
 
   // prettier-ignore
-  var colors = [
-    1.0, 0.0, 0.0, 1.0,
-    0.0, 1.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-  ];
+  let index = [
+    0,1,2,
+    1,2,3,
+  ]
   registerVBO(prg, colors, 4, "color");
+
+  let ibo = create_ibo(index);
+  // IBOをバインドして登録する
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
 };
 
 window.onload = function() {

@@ -11,7 +11,9 @@ export default (gl, prg, size) => {
   let uniLocation = gl.getUniformLocation(prg, "mvpMatrix");
   let drawWithMat = mat => {
     gl.uniformMatrix4fv(uniLocation, false, mat);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    // gl.drawArrays(gl.TRIANGLES, 0, 3);
+    // インデックスを用いた描画命令
+    gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
   };
 
   let count = 0;
