@@ -4,7 +4,7 @@ import startLoop from "./loop";
 
 import torus from "./torus";
 let prependVBO = prg => {
-  let [positions, colors, index] = torus(32, 32, 1, 2);
+  let [positions, colors, index] = torus(32, 32, 1, 3);
 
   registerVBO(prg, positions, 3, "position");
   registerVBO(prg, colors, 4, "color");

@@ -1,4 +1,11 @@
-import { multiply, getModel, getPV } from "./mvpMatrix";
+import {
+  identity,
+  multiply,
+  translate,
+  rotate,
+  getModel,
+  getPV
+} from "./mvpMatrix";
 
 let initCanvas = gl => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -20,7 +27,7 @@ export default (gl, prg, size, indexLength) => {
   let loop = () => {
     initCanvas(gl);
 
-    let t = count / 10;
+    let t = count / 40;
     let pos = [3 * Math.cos(t), 0, 3 * Math.sin(t), 0];
 
     //prettier-ignore
@@ -30,9 +37,17 @@ export default (gl, prg, size, indexLength) => {
     ];
 
     vecs
-      .map(getModel)
+      .map(pos => {
+        let mat = identity();
+        mat = rotate(mat, t, [0, 1, 0]);
+        mat = translate(mat, [3, 0, 0]);
+        mat = rotate(mat, 3.14 / 2, [1, 0, 0]);
+        return mat;
+      })
       .map(model => multiply(pv, model))
       .forEach(drawWithMat);
+
+    drawWithMat(multiply(identity(), pv));
     gl.flush();
 
     count++;

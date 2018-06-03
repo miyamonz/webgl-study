@@ -1,6 +1,9 @@
 import matIV from "./minMatrix";
 var m = new matIV();
 
+export function identity() {
+  return m.identity(m.create());
+}
 export function multiply(mat0, mat1) {
   let ret = m.create();
   m.multiply(mat0, mat1, ret);
@@ -9,6 +12,11 @@ export function multiply(mat0, mat1) {
 export function translate(mat, vec) {
   let ret = m.create();
   m.translate(mat, vec, ret);
+  return ret;
+}
+export function rotate(mat, angle, axis) {
+  let ret = m.create();
+  m.rotate(mat, angle, axis, ret);
   return ret;
 }
 
