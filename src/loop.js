@@ -42,7 +42,7 @@ export default (gl, prg, size, indexLength) => {
     let t = count / 40;
     let pos = [3 * Math.cos(t), 3 * Math.sin(t), 0];
 
-    setLight([1, 0, 0]);
+    setLight([Math.cos(t), Math.sin(t), 0]);
 
     //prettier-ignore
     let vecs = [
