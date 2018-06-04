@@ -31,29 +31,12 @@ export function create_program(vs, fs) {
   }
 }
 
-export function create_shader(id) {
-  var shader;
+function _create_shader(text, isVert) {
+  let shader = isVert
+    ? gl.createShader(gl.VERTEX_SHADER)
+    : gl.createShader(gl.FRAGMENT_SHADER);
 
-  var scriptElement = document.getElementById(id);
-
-  if (!scriptElement) {
-    return;
-  }
-
-  switch (scriptElement.type) {
-    case "x-shader/x-vertex":
-      shader = gl.createShader(gl.VERTEX_SHADER);
-      break;
-
-    case "x-shader/x-fragment":
-      shader = gl.createShader(gl.FRAGMENT_SHADER);
-      break;
-    default:
-      return;
-  }
-
-  gl.shaderSource(shader, scriptElement.text);
-
+  gl.shaderSource(shader, text);
   gl.compileShader(shader);
 
   if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
@@ -61,4 +44,10 @@ export function create_shader(id) {
   } else {
     alert(gl.getShaderInfoLog(shader));
   }
+}
+export function create_shader({ vert, frag }) {
+  return {
+    vert: _create_shader(vert, true),
+    frag: _create_shader(frag, false)
+  };
 }

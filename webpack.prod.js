@@ -1,5 +1,5 @@
-const webpack = require('webpack');
-const path = require('path');
+const webpack = require("webpack");
+const path = require("path");
 
 /*
  * SplitChunksPlugin is enabled by default and replaced
@@ -15,42 +15,45 @@ const path = require('path');
  */
 
 module.exports = {
-	module: {
-		rules: [
-			{
-				test: /\.js$/,
-				include: [path.resolve(__dirname, 'src')],
-				loader: 'babel-loader',
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: [path.resolve(__dirname, "src")],
+        loader: "babel-loader",
 
-				options: {
-					presets: [
-						'env',
-						{
-							modules: false
-						}
-					],
+        options: {
+          presets: ["env"],
 
-					plugins: ['syntax-dynamic-import']
-				}
-			}
-		]
-	},
+          plugins: ["syntax-dynamic-import"]
+        }
+      },
+      {
+        test: /\.(glsl|frag|vert)/,
+        loader: "raw-loader"
+      },
+      {
+        test: /\.(glsl|frag|vert)/,
+        loader: "glslify-loader"
+      }
+    ]
+  },
 
-	mode: 'production',
+  mode: "production",
 
-	optimization: {
-		splitChunks: {
-			chunks: 'async',
-			minSize: 30000,
-			minChunks: 1,
-			name: false,
+  optimization: {
+    splitChunks: {
+      chunks: "async",
+      minSize: 30000,
+      minChunks: 1,
+      name: false,
 
-			cacheGroups: {
-				vendors: {
-					test: /[\\/]node_modules[\\/]/,
-					priority: -10
-				}
-			}
-		}
-	}
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        }
+      }
+    }
+  }
 };

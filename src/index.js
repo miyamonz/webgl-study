@@ -1,3 +1,5 @@
+import vert from "./shader/shader.vert";
+import frag from "./shader/shader.frag";
 import { create_program, create_shader, create_ibo } from "./util";
 import registerVBO from "./registerVBO";
 import startLoop from "./loop";
@@ -10,7 +12,6 @@ let prependVBO = prg => {
   registerVBO(prg, colors, 4, "color");
 
   let ibo = create_ibo(index);
-  // IBOをバインドして登録する
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
 
   return index.length;
@@ -29,8 +30,7 @@ window.onload = function() {
   let gl = c.getContext("webgl");
   window.gl = gl;
 
-  var v_shader = create_shader("vs");
-  var f_shader = create_shader("fs");
+  let { vert: v_shader, frag: f_shader } = create_shader({ frag, vert });
   var prg = create_program(v_shader, f_shader);
 
   let len = prependVBO(prg);
