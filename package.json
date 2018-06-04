@@ -10,7 +10,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "glslify-loader": "^1.0.2",
+    "raw-loader": "^0.5.1"
+  },
   "devDependencies": {
     "@webpack-cli/init": "0.0.8",
     "babel-core": "^6.26.3",
