@@ -19,6 +19,11 @@ export function rotate(mat, angle, axis) {
   m.rotate(mat, angle, axis, ret);
   return ret;
 }
+export function inverse(mat, angle, axis) {
+  let ret = m.create();
+  m.inverse(mat, ret);
+  return ret;
+}
 
 export function getModel(pos) {
   let mat = m.identity(m.create());

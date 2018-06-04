@@ -3,6 +3,7 @@ import {
   multiply,
   translate,
   rotate,
+  inverse,
   getModel,
   getPV
 } from "./mvpMatrix";
@@ -25,22 +26,23 @@ let makeUniformMatFunc = (prg, name) => mat => {
 export default (gl, prg, size, indexLength) => {
   let pv = getPV(size);
   let setMat = makeUniformMatFunc(prg, "mvpMatrix");
+  let setModel = makeUniformMatFunc(prg, "mMatrix");
   let drawWithMat = mat => {
     setMat(mat);
     // gl.drawArrays(gl.TRIANGLES, 0, 3);
     // インデックスを用いた描画命令
     gl.drawElements(gl.TRIANGLES, indexLength, gl.UNSIGNED_SHORT, 0);
   };
-  let setLightDirection = makeUniformFunc(prg, "lightDirection");
+  let setLight = makeUniformFunc(prg, "lightDirection");
 
   let count = 0;
   let loop = () => {
     initCanvas(gl);
 
     let t = count / 40;
-    let pos = [3 * Math.cos(t), 0, 3 * Math.sin(t)];
+    let pos = [3 * Math.cos(t), 3 * Math.sin(t), 0];
 
-    setLightDirection(pos);
+    setLight([1, 0, 0]);
 
     //prettier-ignore
     let vecs = [
@@ -56,9 +58,12 @@ export default (gl, prg, size, indexLength) => {
         mat = rotate(mat, 3.14 / 2, [1, 0, 0]);
         return mat;
       })
-      .map(model => multiply(pv, model))
-      .forEach(drawWithMat);
+      .forEach(model => {
+        setModel(model);
+        drawWithMat(multiply(pv, model));
+      });
 
+    setModel(identity());
     drawWithMat(multiply(identity(), pv));
     gl.flush();
 
