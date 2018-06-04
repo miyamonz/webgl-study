@@ -1,6 +1,7 @@
 import hsva from "./hsva";
 export default (row, column, irad, orad) => {
   var pos = new Array(),
+    nor = new Array(),
     col = new Array(),
     idx = new Array();
   for (var i = 0; i <= row; i++) {
@@ -12,7 +13,10 @@ export default (row, column, irad, orad) => {
       var tx = (rr * irad + orad) * Math.cos(tr);
       var ty = ry * irad;
       var tz = (rr * irad + orad) * Math.sin(tr);
+      var rx = rr * Math.cos(tr);
+      var rz = rr * Math.sin(tr);
       pos.push(tx, ty, tz);
+      nor.push(rx, ry, rz);
       var tc = hsva((360 / column) * ii, 1, 1, 1);
       col.push(tc[0], tc[1], tc[2], tc[3]);
     }
@@ -24,5 +28,5 @@ export default (row, column, irad, orad) => {
       idx.push(r + column + 1, r + column + 2, r + 1);
     }
   }
-  return [pos, col, idx];
+  return [pos, nor, col, idx];
 };

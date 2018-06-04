@@ -13,22 +13,34 @@ let initCanvas = gl => {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 };
 
+let makeUniformFunc = (prg, name) => pos => {
+  let loc = gl.getUniformLocation(prg, name);
+  return gl.uniform3fv(loc, pos);
+};
+let makeUniformMatFunc = (prg, name) => mat => {
+  let loc = gl.getUniformLocation(prg, name);
+  return gl.uniformMatrix4fv(loc, false, mat);
+};
+
 export default (gl, prg, size, indexLength) => {
   let pv = getPV(size);
-  let uniLocation = gl.getUniformLocation(prg, "mvpMatrix");
+  let setMat = makeUniformMatFunc(prg, "mvpMatrix");
   let drawWithMat = mat => {
-    gl.uniformMatrix4fv(uniLocation, false, mat);
+    setMat(mat);
     // gl.drawArrays(gl.TRIANGLES, 0, 3);
     // インデックスを用いた描画命令
     gl.drawElements(gl.TRIANGLES, indexLength, gl.UNSIGNED_SHORT, 0);
   };
+  let setLightDirection = makeUniformFunc(prg, "lightDirection");
 
   let count = 0;
   let loop = () => {
     initCanvas(gl);
 
     let t = count / 40;
-    let pos = [3 * Math.cos(t), 0, 3 * Math.sin(t), 0];
+    let pos = [3 * Math.cos(t), 0, 3 * Math.sin(t)];
+
+    setLightDirection(pos);
 
     //prettier-ignore
     let vecs = [
