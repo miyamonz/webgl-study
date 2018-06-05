@@ -42,11 +42,13 @@ export default (gl, prg, size, indexLength) => {
     gl.drawElements(gl.TRIANGLES, indexLength, gl.UNSIGNED_SHORT, 0);
   };
   let setLight = makeUniformFunc(prg, "lightDirection", 3);
+  let setEye = makeUniformFunc(prg, "eyeDirection", 3);
 
   let count = 0;
   let loop = () => {
     initCanvas(gl);
 
+    setEye([0, 10, 20]);
     let t = count / 40;
     let pos = [3 * Math.cos(t), 3 * Math.sin(t), 0];
 
