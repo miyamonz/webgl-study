@@ -5,8 +5,10 @@ import registerVBO from "./registerVBO";
 import startLoop from "./loop";
 
 import torus from "./torus";
+import sphere from "./sphere";
 let prependVBO = prg => {
-  let [positions, normals, colors, index] = torus(4, 4, 1, 3);
+  // let [positions, normals, colors, index] = torus(4, 4, 1, 3);
+  let [positions, normals, colors, index] = sphere(64, 64, 2.0);
 
   registerVBO(prg, positions, 3, "position");
   registerVBO(prg, normals, 3, "normal");

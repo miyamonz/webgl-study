@@ -41,10 +41,11 @@ export default (gl, prg, size, indexLength) => {
     // インデックスを用いた描画命令
     gl.drawElements(gl.TRIANGLES, indexLength, gl.UNSIGNED_SHORT, 0);
   };
-  let setLight = makeUniformFunc(prg, "lightDirection", 3);
+  let setLight = makeUniformFunc(prg, "lightPosition", 3);
   let setEye = makeUniformFunc(prg, "eyeDirection", 3);
 
   let count = 0;
+
   let loop = () => {
     initCanvas(gl);
 
@@ -52,7 +53,7 @@ export default (gl, prg, size, indexLength) => {
     let t = count / 40;
     let pos = [3 * Math.cos(t), 3 * Math.sin(t), 0];
 
-    setLight([Math.cos(t), Math.sin(t), 0]);
+    setLight([10 * Math.cos(t), 10 * Math.sin(t), 0]);
     setAmbient([0.1, 0.1, 0.1, 1]);
 
     //prettier-ignore
