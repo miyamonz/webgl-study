@@ -13,7 +13,8 @@
   "license": "ISC",
   "dependencies": {
     "glslify-loader": "^1.0.2",
-    "raw-loader": "^0.5.1"
+    "raw-loader": "^0.5.1",
+    "three": "^0.93.0"
   },
   "devDependencies": {
     "@webpack-cli/init": "0.0.8",
