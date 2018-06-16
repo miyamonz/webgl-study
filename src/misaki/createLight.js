@@ -1,5 +1,5 @@
 export default lookAtPos => {
-  const light = new THREE.DirectionalLight(0xffaa55);
+  const light = new THREE.DirectionalLight(0xffffff);
   light.position.set(-4, -6, 10);
   light.castShadow = true;
 

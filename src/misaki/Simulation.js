@@ -16,7 +16,7 @@ const initArrayData = (dataPos, dataVel, dataDef) => {
     defArray[i + 1] = posArray[i + 1] = r * Math.sin(theta) * Math.sin(phi);
     defArray[i + 2] = posArray[i + 2] = r * Math.cos(theta);
 
-    velArray[i + 3] = Math.random() * 1; // frames life
+    velArray[i + 3] = Math.random() * 100; // frames life
   }
 };
 const setVelUniforms = velUniforms => {

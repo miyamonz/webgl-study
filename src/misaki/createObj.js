@@ -3,9 +3,9 @@ import createGeometry from "./createGeometry";
 
 export default ({ size, light, colorPallete }) => {
   var scale = {
-    x: 2,
-    y: 3,
-    z: 2
+    x: 1,
+    y: 4,
+    z: 1
   };
 
   const param = {

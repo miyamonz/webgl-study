@@ -3,10 +3,10 @@ import createObj from "./createObj";
 import createLight from "./createLight";
 
 const colorPallete = [
-  new THREE.Color(0x0d0232),
-  new THREE.Color(0xe50061),
-  new THREE.Color(0x1cafc0),
-  new THREE.Color(0xefcb03)
+  new THREE.Color(0xff6670),
+  new THREE.Color(0xffd000),
+  new THREE.Color(0x77a88d),
+  new THREE.Color(0x28369a)
 ];
 
 export default class Webgl {
@@ -86,7 +86,7 @@ export default class Webgl {
     const { shadow } = light;
     this.renderScene(shadow.camera, shadow.map);
 
-    renderer.setClearColor(0x2e0232);
+    renderer.setClearColor(0xeee2e2);
     mesh.material = material;
     this.renderScene(camera);
   }

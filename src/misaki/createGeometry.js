@@ -2,8 +2,8 @@ const createIAttr = (size, num = 1) =>
   new THREE.InstancedBufferAttribute(new Float32Array(num * size ** 2), num, 1);
 
 export default ({ size, colorPallete }) => {
-  // var originalG = new THREE.BoxBufferGeometry(1, 1, 1);
-  var originalG = new THREE.OctahedronBufferGeometry(1, 0);
+  // var originalG = new THREE.BoxBufferGeometry(2, 2, 2);
+  var originalG = new THREE.OctahedronBufferGeometry(0, 0);
 
   var geometry = new THREE.InstancedBufferGeometry();
 
