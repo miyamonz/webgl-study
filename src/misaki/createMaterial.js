@@ -35,7 +35,7 @@ export const createMaterial = ({ size, scale, light }) => {
     vertexShader: particlesVert,
     fragmentShader: particlesFrag,
     side: THREE.DoubleSide,
-    shading: THREE.FlatShading
+    flatShading: THREE.FlatShading
   });
   return new THREE.ShaderMaterial(param);
 };

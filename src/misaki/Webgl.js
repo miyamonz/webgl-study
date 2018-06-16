@@ -68,7 +68,7 @@ export default class Webgl {
     });
   }
 
-  render(...args) {
+  renderScene(...args) {
     const { renderer, scene } = this;
     renderer.render(scene, ...args);
   }
@@ -77,18 +77,18 @@ export default class Webgl {
     const {
       renderer,
       light,
+      mesh,
       material,
       shadowMaterial,
       camera,
-      mesh
     } = this;
     mesh.material = shadowMaterial;
     const { shadow } = light;
-    this.render(shadow.camera, shadow.map);
+    this.renderScene(shadow.camera, shadow.map);
 
     renderer.setClearColor(0x2e0232);
     mesh.material = material;
-    this.render(camera);
+    this.renderScene(camera);
   }
   loop() {
     const { sim, time } = this;
