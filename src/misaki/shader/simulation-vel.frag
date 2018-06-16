@@ -127,33 +127,32 @@ uniform float timer;
 uniform float delta;
 uniform float speed;
 uniform float factor;
-uniform float evolution;
-uniform float radius;
 
 
 void main() {
   vec2 uv = gl_FragCoord.xy / resolution.xy;
   vec4 c = texture2D( posTex, uv );
   vec4 oldVel = texture2D( velTex, uv );
+  vec3 defPos = texture2D( defTex, uv ).xyz;
 
   vec3 pos = c.xyz;
   float life = oldVel.a;
 
-  float s = life / 100.0;
-  float speedInc = 1.0;
+  float speedInc = .1;
+  vec3 noised = curlNoise( .5 * pos) ;
+  vec3 field = factor * speedInc * delta * speed * noised;
 
-  vec3 v = factor * speedInc * delta * speed * ( curlNoise( .2 * pos) );
+  vec3 newVel = oldVel.xyz;
+  newVel = (field - pos) * 0.001;
 
-  pos += v;
-  life -= 0.3;
+  newVel += field * 25.* ( sin(life / 100.));
+  newVel *= 0.999;
 
+  life -= delta;
   if( life <= 0.0) {
-
-    pos = texture2D( defTex, uv ).xyz;
     life = 100.0;
-
+    newVel = vec3(0.);
   }
 
-
-  gl_FragColor = vec4( pos - c.xyz, life );
+  gl_FragColor = vec4( newVel, life );
 }
