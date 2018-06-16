@@ -2,30 +2,30 @@ import Simulation from "./Simulation";
 import createObj from "./createObj";
 import createLight from "./createLight";
 
+const colorPallete = [
+  new THREE.Color(0x0d0232),
+  new THREE.Color(0xe50061),
+  new THREE.Color(0x1cafc0),
+  new THREE.Color(0xefcb03)
+];
+
 export default class Webgl {
   constructor() {
-    this.size = 128;
     this.widthW = document.body.clientWidth;
     this.heightW = window.innerHeight;
-    this.init();
+    this.init({ size: 128 });
+    this.loop();
   }
 
-  init() {
+  init({ size }) {
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     // renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize(this.widthW, this.heightW);
 
+    const sim = new Simulation(renderer, size);
+
     const container = document.getElementById("canvas");
     container.appendChild(renderer.domElement);
-
-    const scene = new THREE.Scene();
-
-    this.colorPallete = [
-      new THREE.Color(0x0d0232),
-      new THREE.Color(0xe50061),
-      new THREE.Color(0x1cafc0),
-      new THREE.Color(0xefcb03)
-    ];
 
     const camera = new THREE.PerspectiveCamera(
       45,
@@ -33,26 +33,29 @@ export default class Webgl {
       0.01,
       10000
     );
-    scene.add(camera);
     camera.position.set(-0.1, 4.0, 0.1);
+    new THREE.OrbitControls(camera, renderer.domElement);
+    const scene = new THREE.Scene();
+    scene.add(camera);
 
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-    //mount on this
-    this.sim = new Simulation(renderer, this.size);
-    Object.assign(this, { renderer, scene, camera });
-
-    this.light = createLight(scene.position);
+    const light = createLight(scene.position);
     const { mesh, material, shadowMaterial } = createObj({
-      size: this.size,
-      light: this.light,
-      colorPallete: this.colorPallete
+      size,
+      light,
+      colorPallete
     });
     scene.add(mesh);
-    Object.assign(this, { scene, mesh, material, shadowMaterial });
-
-    this.time = new THREE.Clock();
-    this.render();
+    Object.assign(this, {
+      renderer,
+      sim,
+      time: new THREE.Clock(),
+      scene,
+      mesh,
+      camera,
+      light,
+      material,
+      shadowMaterial
+    });
   }
 
   updateUniformsOfMaterial(time, posMap, velMap) {
@@ -64,26 +67,42 @@ export default class Webgl {
       uni.timer.value = time;
     });
   }
-  render() {
-    var delta = this.time.getDelta() * 4;
-    var time = this.time.elapsedTime;
 
-    this.sim.setTime(time, delta);
-    this.sim.gpuCompute.compute();
-    const posMap = this.sim.getPosMap();
-    const velMap = this.sim.getVelMap();
-    this.updateUniformsOfMaterial(time, posMap, velMap);
+  render(...args) {
+    const { renderer, scene } = this;
+    renderer.render(scene, ...args);
+  }
+  updateRender() {
+    //prettier-ignore
+    const {
+      renderer,
+      light,
+      material,
+      shadowMaterial,
+      camera,
+      mesh
+    } = this;
+    mesh.material = shadowMaterial;
+    const { shadow } = light;
+    this.render(shadow.camera, shadow.map);
 
-    //draw shadow, target
-    this.mesh.material = this.shadowMaterial;
-    const { shadow } = this.light;
-    this.renderer.render(this.scene, shadow.camera, shadow.map);
+    renderer.setClearColor(0x2e0232);
+    mesh.material = material;
+    this.render(camera);
+  }
+  loop() {
+    const { sim, time } = this;
+    var delta = time.getDelta() * 4;
+    var now = time.elapsedTime;
 
-    this.renderer.setClearColor(0x2e0232);
-    this.mesh.material = this.material;
-    this.renderer.render(this.scene, this.camera);
+    sim.setTime(now, delta);
+    sim.gpuCompute.compute();
+    const posMap = sim.getPosMap();
+    const velMap = sim.getVelMap();
+    this.updateUniformsOfMaterial(now, posMap, velMap);
+    this.updateRender();
 
-    requestAnimationFrame(this.render.bind(this));
+    requestAnimationFrame(this.loop.bind(this));
   }
 
   resize() {
