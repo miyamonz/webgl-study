@@ -1,6 +1,6 @@
-import shaderDef from "../shader/simulation-def.frag";
-import shaderPos from "../shader/simulation-pos.frag";
-import shaderVel from "../shader/simulation-vel.frag";
+import shaderDef from "./shader/simulation-def.frag";
+import shaderPos from "./shader/simulation-pos.frag";
+import shaderVel from "./shader/simulation-vel.frag";
 
 const initArrayData = (dataPos, dataVel, dataDef) => {
   const posArray = dataPos.image.data;

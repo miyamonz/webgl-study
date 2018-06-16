@@ -1,6 +1,6 @@
-import particlesVert from "../shader/particles.vert";
-import particlesFrag from "../shader/particles.frag";
-import particlesShadow from "../shader/particles-shadow.frag";
+import particlesVert from "./shader/particles.vert";
+import particlesFrag from "./shader/particles.frag";
+import particlesShadow from "./shader/particles-shadow.frag";
 
 const getDefaultUniforms = (size, scale, light) => {
   return {
