@@ -65,4 +65,15 @@ export default class Simulation {
       console.error(error);
     }
   }
+
+  getPosMap() {
+    return this.gpuCompute.getCurrentRenderTarget(this.pos).texture;
+  }
+  getVelMap() {
+    return this.gpuCompute.getCurrentRenderTarget(this.vel).texture;
+  }
+  setTime(time, delta) {
+    this.velUniforms.timer.value = time;
+    this.velUniforms.delta.value = delta;
+  }
 }

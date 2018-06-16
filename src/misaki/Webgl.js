@@ -1,8 +1,6 @@
 import Simulation from "./Simulation";
 
-import particlesVert from "../shader/particles.vert";
-import particlesFrag from "../shader/particles.frag";
-import particlesShadow from "../shader/particles-shadow.frag";
+import { createMaterial, createShadowMaterial } from "./createMaterial";
 
 export default class Webgl {
   constructor() {
@@ -56,7 +54,6 @@ export default class Webgl {
     this.light.position.set(-4, -6, 10);
     this.light.castShadow = true;
     this.shadowCamera = this.light.shadow.camera;
-    // this.shadowCamera.position.set(-4, -6, 10);
     this.shadowCamera.lookAt(this.scene.position);
 
     //prettier-ignore
@@ -109,24 +106,21 @@ export default class Webgl {
     var uvs = originalG.attributes.uv.clone();
     geometry.addAttribute("uv", uvs);
 
-    // index
-    // var indices = originalG.index.clone();
-    // geometry.setIndex(indices);
-
-    geometry.maxInstancedCount = this.sim.size * this.sim.size;
+    const size = this.sim.size;
+    geometry.maxInstancedCount = size ** 2;
 
     var nums = new THREE.InstancedBufferAttribute(
-      new Float32Array(this.sim.size * this.sim.size * 1),
+      new Float32Array(size ** 2),
       1,
       1
     );
     var randoms = new THREE.InstancedBufferAttribute(
-      new Float32Array(this.sim.size * this.sim.size * 1),
+      new Float32Array(size ** 2),
       1,
       1
     );
     var colors = new THREE.InstancedBufferAttribute(
-      new Float32Array(this.sim.size * this.sim.size * 3),
+      new Float32Array(3 * size ** 2),
       3,
       1
     );
@@ -147,105 +141,39 @@ export default class Webgl {
 
     var scale = {
       x: 2,
-      y: 8,
+      y: 3,
       z: 2
     };
 
-    this.material = new THREE.ShaderMaterial({
-      uniforms: {
-        posMap: {
-          type: "t",
-          value: this.sim.gpuCompute.getCurrentRenderTarget(this.sim.pos)
-            .texture
-        },
-        velMap: {
-          type: "t",
-          value: this.sim.gpuCompute.getCurrentRenderTarget(this.sim.vel)
-            .texture
-        },
-        size: { type: "f", value: this.sim.size },
-
-        timer: { type: "f", value: 0 },
-        boxScale: {
-          type: "v3",
-          value: new THREE.Vector3(scale.x, scale.y, scale.z)
-        },
-        meshScale: { type: "f", value: 0.7 },
-
-        shadowMap: { type: "t", value: this.light.shadow.map },
-        shadowMapSize: { type: "v2", value: this.light.shadow.mapSize },
-        shadowBias: { type: "f", value: this.light.shadow.bias },
-        shadowRadius: { type: "f", value: this.light.shadow.radius },
-
-        // Line 217 in https://github.com/mrdoob/three.js/blob/dev/src/renderers/webgl/WebGLShadowMap.js
-        shadowMatrix: { type: "m4", value: this.light.shadow.matrix },
-        lightPosition: { type: "v3", value: this.light.position }
-      },
-
-      vertexShader: particlesVert,
-      fragmentShader: particlesFrag,
-      side: THREE.DoubleSide,
-      shading: THREE.FlatShading
-    });
+    const param = {
+      size: this.sim.size,
+      scale,
+      light: this.light
+    };
+    this.material = createMaterial(param);
+    this.shadowMaterial = createShadowMaterial(param);
 
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.scene.add(this.mesh);
-
-    this.shadowMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        posMap: {
-          type: "t",
-          value: this.sim.gpuCompute.getCurrentRenderTarget(this.sim.pos)
-            .texture
-        },
-        velMap: {
-          type: "t",
-          value: this.sim.gpuCompute.getCurrentRenderTarget(this.sim.vel)
-            .texture
-        },
-        size: { type: "f", value: this.sim.size },
-
-        timer: { type: "f", value: 0 },
-        boxScale: {
-          type: "v3",
-          value: new THREE.Vector3(scale.x, scale.y, scale.z)
-        },
-        meshScale: { type: "f", value: 0.7 },
-
-        shadowMatrix: { type: "m4", value: this.light.shadow.matrix },
-        lightPosition: { type: "v3", value: this.light.position }
-      },
-      vertexShader: particlesVert,
-      fragmentShader: particlesShadow,
-      side: THREE.DoubleSide
-    });
   }
 
   render() {
     var delta = this.time.getDelta() * 4;
     var time = this.time.elapsedTime;
 
-    this.sim.velUniforms.timer.value = time;
-    this.sim.velUniforms.delta.value = delta;
-
+    this.sim.setTime(time, delta);
     this.sim.gpuCompute.compute();
 
-    this.material.uniforms.posMap.value = this.sim.gpuCompute.getCurrentRenderTarget(
-      this.sim.pos
-    ).texture;
-    this.material.uniforms.velMap.value = this.sim.gpuCompute.getCurrentRenderTarget(
-      this.sim.vel
-    ).texture;
-
-    this.shadowMaterial.uniforms.posMap.value = this.sim.gpuCompute.getCurrentRenderTarget(
-      this.sim.pos
-    ).texture;
-    this.shadowMaterial.uniforms.velMap.value = this.sim.gpuCompute.getCurrentRenderTarget(
-      this.sim.vel
-    ).texture;
+    const posMap = this.sim.getPosMap();
+    const velMap = this.sim.getVelMap();
+    this.material.uniforms.posMap.value = posMap;
+    this.material.uniforms.velMap.value = velMap;
+    this.shadowMaterial.uniforms.posMap.value = posMap;
+    this.shadowMaterial.uniforms.velMap.value = velMap;
 
     this.material.uniforms.timer.value = this.shadowMaterial.uniforms.timer.value = time;
 
+    //draw shadow, target
     this.mesh.material = this.shadowMaterial;
     this.renderer.render(this.scene, this.shadowCamera, this.light.shadow.map);
 
