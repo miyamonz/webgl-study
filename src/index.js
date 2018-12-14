@@ -1,3 +1,4 @@
+import { Renderer } from "ogl";
 import vert from "./shader/shader.vert";
 import frag from "./shader/shader.frag";
 import { createProgramFromShaderText, create_ibo } from "./util";
@@ -27,13 +28,15 @@ window.onload = function() {
   const height = 500;
   Object.assign(canvas, { width, height });
 
-  const gl = canvas.getContext("webgl");
-  const prg = createProgramFromShaderText(gl, { frag, vert });
+  const renderer = new Renderer({ canvas, width, height });
+  const gl = renderer.gl;
 
+  renderer.setDepthFunc(gl.LEQUAL);
+  //ProgramにcullFaceがあれば自動でなる
+  renderer.enable(gl.CULL_FACE);
+
+  const prg = createProgramFromShaderText(gl, { frag, vert });
   const len = prependVBO(gl, prg);
-  gl.enable(gl.DEPTH_TEST);
-  gl.depthFunc(gl.LEQUAL);
-  gl.enable(gl.CULL_FACE);
 
   startLoop(gl, prg, { width, height }, len);
 };
