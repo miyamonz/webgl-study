@@ -1,45 +1,39 @@
-import vert from "./shader/shader.vert";
-import frag from "./shader/shader.frag";
-import { create_program, create_shader, create_ibo } from "./util";
-import registerVBO from "./registerVBO";
-import startLoop from "./loop";
+import { Renderer, Program } from "ogl";
+import vertex from "./shader/shader.vert";
+import fragment from "./shader/shader.frag";
+import geometries from "./geometries";
+import loop from "./loop";
+import createAnimate, { uniforms } from "./animate";
 
 import torus from "./torus";
-import sphere from "./sphere";
-let prependVBO = prg => {
-  // let [positions, normals, colors, index] = torus(4, 4, 1, 3);
-  let [positions, normals, colors, index] = sphere(64, 64, 2.0);
-
-  registerVBO(prg, positions, 3, "position");
-  registerVBO(prg, normals, 3, "normal");
-  registerVBO(prg, colors, 4, "color");
-
-  let ibo = create_ibo(index);
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
-
-  return index.length;
-};
 
 window.onload = function() {
-  // canvasエレメントを取得
-  var c = document.getElementById("canvas");
-  c.width = 500;
-  c.height = 500;
-  let size = {
-    width: c.width,
-    height: c.height
+  const width = 500;
+  const height = 500;
+
+  const renderer = new Renderer({ width, height });
+  const gl = renderer.gl;
+  document.body.appendChild(gl.canvas);
+  //これがないとずれるが、renderer.renderにかえれば必要がなくなるはず
+  renderer.setViewport(width, height);
+
+  renderer.setDepthFunc(gl.LEQUAL);
+
+  const prg = new Program(gl, {
+    vertex,
+    fragment,
+    uniforms
+  });
+
+  const { sphere } = geometries(gl, prg);
+  const length = sphere.attributes.index.count;
+  const draw = () => {
+    prg.use();
+    // gl.drawArrays(gl.TRIANGLES, 0, 3);
+    // インデックスを用いた描画命令
+    gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
   };
 
-  let gl = c.getContext("webgl");
-  window.gl = gl;
-
-  let { vert: v_shader, frag: f_shader } = create_shader({ frag, vert });
-  var prg = create_program(v_shader, f_shader);
-
-  let len = prependVBO(prg);
-  gl.enable(gl.DEPTH_TEST);
-  gl.depthFunc(gl.LEQUAL);
-  gl.enable(gl.CULL_FACE);
-
-  startLoop(gl, prg, size, len);
+  const tick = createAnimate(gl, prg, draw);
+  loop(tick);
 };
