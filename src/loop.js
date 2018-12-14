@@ -1,12 +1,5 @@
-import {
-  identity,
-  multiply,
-  translate,
-  rotate,
-  inverse,
-  getModel,
-  getPV
-} from "./mvpMatrix";
+import { getPV } from "./mvpMatrix";
+import { Mat4 } from "ogl";
 
 const initCanvas = gl => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -63,20 +56,19 @@ export default (gl, prg, size, indexLength) => {
     ];
 
     vecs
-      .map(pos => {
-        let mat = identity();
-        mat = rotate(mat, t, [0, 1, 0]);
-        mat = translate(mat, [3, 0, 0]);
-        mat = rotate(mat, 3.14 / 2, [1, 0, 0]);
-        return mat;
-      })
+      .map(pos =>
+        new Mat4()
+          .rotateY(t)
+          .translate([3, 0, 0])
+          .rotateX(3.14 / 2)
+      )
       .forEach(model => {
         setModel(model);
-        drawWithMat(multiply(pv, model));
+        drawWithMat(new Mat4(pv).multiply(model));
       });
 
-    setModel(identity());
-    drawWithMat(multiply(identity(), pv));
+    setModel(new Mat4());
+    drawWithMat(pv);
     gl.flush();
 
     count++;
