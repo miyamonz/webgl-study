@@ -15,7 +15,8 @@ export const uniforms = {
   eyeDirection: { value: [0, 10, 20] }
 };
 
-export default (gl, { uniforms, draw }) => {
+export default (gl, program, draw) => {
+  const { uniforms } = program;
   const { width, height } = gl.renderer;
   const pv = getPV(width, height);
   const setMat = v => (uniforms.mvpMatrix.value = v);

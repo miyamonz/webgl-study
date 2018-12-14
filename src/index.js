@@ -1,7 +1,7 @@
-import { Renderer } from "ogl";
-import vert from "./shader/shader.vert";
-import frag from "./shader/shader.frag";
-import createProgram from "./program";
+import { Renderer, Program } from "ogl";
+import vertex from "./shader/shader.vert";
+import fragment from "./shader/shader.frag";
+import { prependGeometry } from "./program";
 import loop from "./loop";
 import createAnimate, { uniforms } from "./animate";
 
@@ -21,12 +21,14 @@ window.onload = function() {
   //ProgramにcullFaceがあれば自動でなる
   renderer.enable(gl.CULL_FACE);
 
-  const prg = createProgram(gl, {
-    frag,
-    vert,
+  const prg = new Program(gl, {
+    vertex,
+    fragment,
     uniforms
   });
 
-  const tick = createAnimate(gl, prg);
+  const { draw } = prependGeometry(gl, prg);
+
+  const tick = createAnimate(gl, prg, draw);
   loop(tick);
 };

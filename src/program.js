@@ -1,5 +1,5 @@
 import registerVBO from "./registerVBO";
-import { createProgramFromShaderText, create_ibo } from "./util";
+import { create_ibo } from "./util";
 
 import sphere from "./sphere";
 
@@ -17,42 +17,14 @@ let prependVBO = (gl, prg) => {
   return index.length;
 };
 
-const makeUniformFunc = (gl, prg, name, num) => pos => {
-  const loc = gl.getUniformLocation(prg, name);
-  switch (num) {
-    case 2:
-      return gl.uniform2fv(loc, pos);
-    case 3:
-      return gl.uniform3fv(loc, pos);
-    case 4:
-      return gl.uniform4fv(loc, pos);
-  }
-};
-const makeUniformMatFunc = (gl, prg, name) => mat => {
-  const loc = gl.getUniformLocation(prg, name);
-  return gl.uniformMatrix4fv(loc, false, mat);
-};
-const use = (gl, prg, uniforms) => {
-  for ([name, uniform] of Object.entries(uniforms)) {
-    const len = uniform.value.length;
-    if (len <= 4) makeUniformFunc(gl, prg, name, len)(uniform.value);
-    else if (len === 16) makeUniformMatFunc(gl, prg, name)(uniform.value);
-  }
-};
-
-export default function(gl, { frag, vert, uniforms }) {
-  const program = createProgramFromShaderText(gl, { frag, vert });
-  const len = prependVBO(gl, program);
-
-  const draw = () => {
-    use(gl, program, uniforms);
-    // gl.drawArrays(gl.TRIANGLES, 0, 3);
-    // インデックスを用いた描画命令
-    gl.drawElements(gl.TRIANGLES, len, gl.UNSIGNED_SHORT, 0);
-  };
+export const prependGeometry = (gl, oglProgram) => {
+  const len = prependVBO(gl, oglProgram.program);
   return {
-    program,
-    uniforms,
-    draw
+    draw: () => {
+      oglProgram.use();
+      // gl.drawArrays(gl.TRIANGLES, 0, 3);
+      // インデックスを用いた描画命令
+      gl.drawElements(gl.TRIANGLES, len, gl.UNSIGNED_SHORT, 0);
+    }
   };
-}
+};
