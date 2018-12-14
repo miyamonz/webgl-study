@@ -49,3 +49,7 @@ export function create_shader(gl, { vert, frag }) {
     frag: _create_shader(gl, frag, false)
   };
 }
+export function createProgramFromShaderText(gl, { vert, frag }) {
+  const { vert: vs, frag: fs } = create_shader(gl, { frag, vert });
+  return create_program(gl, vs, fs);
+}

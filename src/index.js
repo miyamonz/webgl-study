@@ -1,6 +1,6 @@
 import vert from "./shader/shader.vert";
 import frag from "./shader/shader.frag";
-import { create_program, create_shader, create_ibo } from "./util";
+import { createProgramFromShaderText, create_ibo } from "./util";
 import registerVBO from "./registerVBO";
 import startLoop from "./loop";
 
@@ -28,9 +28,7 @@ window.onload = function() {
   Object.assign(canvas, { width, height });
 
   const gl = canvas.getContext("webgl");
-
-  const { vert: v_shader, frag: f_shader } = create_shader(gl, { frag, vert });
-  const prg = create_program(gl, v_shader, f_shader);
+  const prg = createProgramFromShaderText(gl, { frag, vert });
 
   const len = prependVBO(gl, prg);
   gl.enable(gl.DEPTH_TEST);
