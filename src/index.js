@@ -1,7 +1,7 @@
 import { Renderer, Program } from "ogl";
 import vertex from "./shader/shader.vert";
 import fragment from "./shader/shader.frag";
-import { prependGeometry } from "./program";
+import geometries from "./geometries";
 import loop from "./loop";
 import createAnimate, { uniforms } from "./animate";
 
@@ -18,8 +18,6 @@ window.onload = function() {
   renderer.setViewport(width, height);
 
   renderer.setDepthFunc(gl.LEQUAL);
-  //ProgramにcullFaceがあれば自動でなる
-  renderer.enable(gl.CULL_FACE);
 
   const prg = new Program(gl, {
     vertex,
@@ -27,7 +25,14 @@ window.onload = function() {
     uniforms
   });
 
-  const { draw } = prependGeometry(gl, prg);
+  const { sphere } = geometries(gl, prg);
+  const length = sphere.attributes.index.count;
+  const draw = () => {
+    prg.use();
+    // gl.drawArrays(gl.TRIANGLES, 0, 3);
+    // インデックスを用いた描画命令
+    gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
+  };
 
   const tick = createAnimate(gl, prg, draw);
   loop(tick);
