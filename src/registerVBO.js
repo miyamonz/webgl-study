@@ -1,8 +1,8 @@
 import { create_vbo } from "./util";
 
-export default (prg, data, stride, name) => {
+export default (gl, prg, data, stride, name) => {
   // VBOの生成とbind
-  var vbo = create_vbo(data);
+  var vbo = create_vbo(gl, data);
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
 
   // attributeLocationの取得

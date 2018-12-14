@@ -7,7 +7,7 @@ const initCanvas = gl => {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 };
 
-const makeUniformFunc = (prg, name, num) => pos => {
+const makeUniformFunc = (gl, prg, name, num) => pos => {
   const loc = gl.getUniformLocation(prg, name);
   switch (num) {
     case 2:
@@ -18,24 +18,24 @@ const makeUniformFunc = (prg, name, num) => pos => {
       return gl.uniform4fv(loc, pos);
   }
 };
-const makeUniformMatFunc = (prg, name) => mat => {
+const makeUniformMatFunc = (gl, prg, name) => mat => {
   const loc = gl.getUniformLocation(prg, name);
   return gl.uniformMatrix4fv(loc, false, mat);
 };
 
 export default (gl, prg, size, indexLength) => {
   const pv = getPV(size);
-  const setMat = makeUniformMatFunc(prg, "mvpMatrix");
-  const setModel = makeUniformMatFunc(prg, "mMatrix");
-  const setAmbient = makeUniformFunc(prg, "ambientColor", 4);
+  const setMat = makeUniformMatFunc(gl, prg, "mvpMatrix");
+  const setModel = makeUniformMatFunc(gl, prg, "mMatrix");
+  const setAmbient = makeUniformFunc(gl, prg, "ambientColor", 4);
   const drawWithMat = mat => {
     setMat(mat);
     // gl.drawArrays(gl.TRIANGLES, 0, 3);
     // インデックスを用いた描画命令
     gl.drawElements(gl.TRIANGLES, indexLength, gl.UNSIGNED_SHORT, 0);
   };
-  const setLight = makeUniformFunc(prg, "lightPosition", 3);
-  const setEye = makeUniformFunc(prg, "eyeDirection", 3);
+  const setLight = makeUniformFunc(gl, prg, "lightPosition", 3);
+  const setEye = makeUniformFunc(gl, prg, "eyeDirection", 3);
 
   let count = 0;
 
