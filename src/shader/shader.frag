@@ -15,9 +15,9 @@ vec3 getModeled(vec3 v) {
 
 void main(void){
   vec3 lightVec = lightPosition - vPosition;
-  vec3 gnormal = getModeled(vNormal);
+  vec3 gnormal = normalize(vNormal);
   vec3 halfLE = normalize(lightVec + eyeDirection);
-  float diffuse  = clamp(dot(gnormal, lightVec), 0., 1.0);
+  float diffuse  = clamp(dot(gnormal, normalize(lightVec)), 0., 1.0);
 
   float specular = pow(clamp(dot(gnormal, halfLE), 0.0, 1.0), 50.0);
   vec4 baseColor = vColor * vec4(vec3(diffuse), 1.0); 
