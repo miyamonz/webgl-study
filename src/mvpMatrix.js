@@ -1,7 +1,7 @@
 import { Mat4 } from "ogl";
 import { lookAt } from "ogl/src/math/functions/Mat4Func.js";
 
-export function getPV({ width, height }) {
+export function getPV(width, height) {
   const vMatrix = new Mat4();
 
   // ビュー座標変換行列

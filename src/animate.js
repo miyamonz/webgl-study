@@ -15,8 +15,9 @@ export const uniforms = {
   eyeDirection: { value: [0, 10, 20] }
 };
 
-export default (gl, { program: prg, uniforms, draw, length }, size) => {
-  const pv = getPV(size);
+export default (gl, { uniforms, draw }) => {
+  const { width, height } = gl.renderer;
+  const pv = getPV(width, height);
   const setMat = v => (uniforms.mvpMatrix.value = v);
   const setModel = v => (uniforms.mMatrix.value = v);
   const setAmbient = v => (uniforms.ambientColor.value = v);

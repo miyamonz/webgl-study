@@ -27,6 +27,6 @@ window.onload = function() {
     uniforms
   });
 
-  const tick = createAnimate(gl, prg, { width, height });
+  const tick = createAnimate(gl, prg);
   loop(tick);
 };

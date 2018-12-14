@@ -41,19 +41,18 @@ const use = (gl, prg, uniforms) => {
 };
 
 export default function(gl, { frag, vert, uniforms }) {
-  const _program = createProgramFromShaderText(gl, { frag, vert });
-  const len = prependVBO(gl, _program);
+  const program = createProgramFromShaderText(gl, { frag, vert });
+  const len = prependVBO(gl, program);
 
   const draw = () => {
-    use(gl, _program, uniforms);
+    use(gl, program, uniforms);
     // gl.drawArrays(gl.TRIANGLES, 0, 3);
     // インデックスを用いた描画命令
-    gl.drawElements(gl.TRIANGLES, length, gl.UNSIGNED_SHORT, 0);
+    gl.drawElements(gl.TRIANGLES, len, gl.UNSIGNED_SHORT, 0);
   };
   return {
-    program: _program,
+    program,
     uniforms,
-    draw,
-    length: len
+    draw
   };
 }
