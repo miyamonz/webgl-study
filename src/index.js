@@ -8,14 +8,14 @@ import createAnimate, { uniforms } from "./animate";
 import torus from "./torus";
 
 window.onload = function() {
-  // canvasエレメントを取得
-  const canvas = document.getElementById("canvas");
   const width = 500;
   const height = 500;
-  Object.assign(canvas, { width, height });
 
-  const renderer = new Renderer({ canvas, width, height });
+  const renderer = new Renderer({ width, height });
   const gl = renderer.gl;
+  document.body.appendChild(gl.canvas);
+  //これがないとずれるが、renderer.renderにかえれば必要がなくなるはず
+  renderer.setViewport(width, height);
 
   renderer.setDepthFunc(gl.LEQUAL);
   //ProgramにcullFaceがあれば自動でなる
