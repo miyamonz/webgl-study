@@ -1,5 +1,5 @@
 import { getPV, transpose } from "./mvpMatrix";
-import { Mat4, Color } from "ogl";
+import { Vec3, Mat4, Color } from "ogl";
 
 const initCanvas = gl => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -37,25 +37,30 @@ export default (gl, program, draw) => {
     initCanvas(gl);
 
     const t = count / 40;
-    const pos = [5 * Math.cos(t), 5 * Math.sin(t), 0];
+    const pos = new Vec3([Math.cos(t), Math.sin(t), 0]);
 
-    setLight([100, 0, 0]);
+    setLight([100, 100, 100]);
     setAmbient([0.2, 0.2, 0.2, 1]);
 
     //prettier-ignore
     const vecs = [
       [0, 0, 0], 
-      pos
+      pos,
+      new Vec3(pos),
+      new Vec3(pos),
+      new Vec3(pos),
+      new Vec3(pos),
     ];
 
     vecs
-      .map(pos =>
+      .map((pos, i) =>
         //prettier-ignore
         new Mat4()
           .rotateY(t)
-          .translate(pos)
-          .rotateZ(t)
-          .rotateX(t)
+          .rotateX(2 * t * i/10)
+          .rotateZ(t + t * i/10)
+          .translate(new Vec3(pos).multiply(5 + Math.sin(t * i/10) * 0.4))
+          .rotateX(i * t)
       )
       .forEach(model => {
         drawPVM(model);
