@@ -39,10 +39,10 @@ export default (gl, program, draw) => {
   const tick = ({ time, count }) => {
     initCanvas(gl);
 
-    const t = count / 40;
+    const t = count / 80;
     const pos = new Vec3([Math.cos(t), Math.sin(t), 0]);
 
-    setLight([100, 100, 100]);
+    setLight([Math.sin(2 * t) * 100, Math.sin(3 * t) * 100, 40]);
     setAmbient([0.2, 0.2, 0.2]);
 
     //prettier-ignore
@@ -59,11 +59,11 @@ export default (gl, program, draw) => {
       .map((pos, i) =>
         //prettier-ignore
         new Mat4()
-          .rotateY(t)
+          .rotateY(t/10)
           .rotateX(2 * t * i/10)
           .rotateZ(t + t * i/10)
           .translate(new Vec3(pos).multiply(5 + Math.sin(t * i/10) * 0.4))
-          .rotateX(i * t)
+          .rotateX(i * t/10)
       )
       .forEach(model => {
         drawPVM(model);
