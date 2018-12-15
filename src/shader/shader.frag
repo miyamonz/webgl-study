@@ -3,7 +3,7 @@ precision mediump float;
 uniform   mat4 mMatrix;
 uniform   vec3 lightPosition;
 uniform   vec3 eyeDirection;
-uniform   vec4 ambientColor;
+uniform   vec3 ambientColor;
 
 varying vec3 vPosition;
 varying vec3 vNormal;
@@ -21,7 +21,7 @@ void main(void){
 
   float specular = pow(clamp(dot(gnormal, halfLE), 0.0, 1.0), 50.0);
   vec4 baseColor = vColor * vec4(vec3(diffuse), 1.0); 
-  vec4 light     =  + baseColor + ( vec4(vec3(specular),1.0));
-  vec4 destColor = light + ambientColor;
+  vec4 light     = baseColor + ( vec4(vec3(specular),0.0));
+  vec4 destColor = light + vec4(ambientColor,0.0);
     gl_FragColor = destColor; 
 }

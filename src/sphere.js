@@ -19,7 +19,7 @@ export default (row, column, rad, color) => {
       if (color) {
         tc = color;
       } else {
-        tc = hsva((360 / row) * i, 1, 1, 1);
+        tc = hsva((360 / row) * i, 1, 1, 0.7);
       }
       pos.push(tx, ty, tz);
       nor.push(rx, ry, rz);

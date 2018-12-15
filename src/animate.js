@@ -12,7 +12,7 @@ export const uniforms = {
   pvmMatrix: { value: new Mat4() },
   mMatrix: { value: new Mat4() },
   mMatrixRT: { value: new Mat4() },
-  ambientColor: { value: new Color([0.1, 0.1, 0.1, 1]) },
+  ambientColor: { value: new Color([0.1, 0.1, 0.1]) },
   lightPosition: { value: [1, 0, 0] },
   eyeDirection: { value: [0, 0, 20] }
 };
@@ -43,7 +43,7 @@ export default (gl, program, draw) => {
     const pos = new Vec3([Math.cos(t), Math.sin(t), 0]);
 
     setLight([100, 100, 100]);
-    setAmbient([0.2, 0.2, 0.2, 1]);
+    setAmbient([0.2, 0.2, 0.2]);
 
     //prettier-ignore
     const vecs = [
