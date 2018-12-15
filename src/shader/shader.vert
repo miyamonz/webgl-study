@@ -5,7 +5,7 @@ attribute vec3 normal;
 attribute vec4 color;
 
 uniform   mat4 mMatrix;
-uniform   mat4 mMatrixIV;
+uniform   mat4 mMatrixRT;
 uniform   mat4 pvmMatrix;
 
 varying vec3 vPosition;
@@ -17,7 +17,7 @@ void main(void){
   vec4 pos4 = vec4(position, 1.);
   vec4 nor4 = vec4(normal, 1.);
   vPosition = (mMatrix * pos4).xyz;
-  vNormal = (mMatrixIV * nor4).xyz;
+  vNormal = (mMatrixRT * nor4).xyz;
   vColor  = color; 
   gl_Position = pvmMatrix * pos4;
 }

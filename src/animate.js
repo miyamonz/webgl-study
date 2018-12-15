@@ -1,5 +1,6 @@
-import { getPV, transpose } from "./mvpMatrix";
+import { getPV } from "./mvpMatrix";
 import { Vec3, Mat4, Color } from "ogl";
+import { transpose } from "ogl/src/math/functions/Mat4Func.js";
 
 const initCanvas = gl => {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -10,7 +11,7 @@ const initCanvas = gl => {
 export const uniforms = {
   pvmMatrix: { value: new Mat4() },
   mMatrix: { value: new Mat4() },
-  mMatrixIV: { value: new Mat4() },
+  mMatrixRT: { value: new Mat4() },
   ambientColor: { value: new Color([0.1, 0.1, 0.1, 1]) },
   lightPosition: { value: [1, 0, 0] },
   eyeDirection: { value: [0, 0, 20] }
@@ -22,7 +23,9 @@ export default (gl, program, draw) => {
   const pv = getPV(width, height);
   const setVPM = (vp, m) => {
     uniforms.mMatrix.value = m;
-    uniforms.mMatrixIV.value = transpose(new Mat4(m).inverse());
+    const rt = new Mat4();
+    transpose(rt, new Mat4(m).inverse());
+    uniforms.mMatrixRT.value = rt;
     uniforms.pvmMatrix.value = new Mat4(pv).multiply(m);
   };
   const setAmbient = v => (uniforms.ambientColor.value = v);
