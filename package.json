@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "glslify-loader": "^1.0.2",
+    "glslify-loader": "^2.0.0",
     "ogl": "0.0.11",
     "raw-loader": "^0.5.1"
   },
